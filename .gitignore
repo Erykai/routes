@@ -1,0 +1,5 @@
+vendor
+_db-docker-dev_
+composer.lock
+composer.phar
+index.php

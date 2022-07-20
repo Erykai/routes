@@ -1,0 +1,20 @@
+{
+  "name": "erykai/routes",
+  "description": "Responsible for managing application routes",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "alexdeovidal",
+      "email": "contato@webav.com.br"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Erykai\\Routes\\": "src"
+    }
+  },
+  "require": {
+
+  }
+}
