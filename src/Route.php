@@ -2,80 +2,97 @@
 
 namespace Erykai\Routes;
 
-class Route
+/**
+ * Class Route define route
+ */
+class Route extends Resource
 {
-    protected string $error;
-    protected string $method;
-    protected string $request;
-    protected string $namespace;
-    protected bool $notFound = true;
+    use TraitRoute;
 
+    /**
+     * construct
+     */
     public function __construct()
     {
-        $this->method = filter_var($_SERVER['REQUEST_METHOD']);
-        $this->request = filter_var($_SERVER['REQUEST_URI']);
+        $this->setMethod();
     }
 
+    /**
+     * @param string $namespace
+     */
     public function namespace(string $namespace): void
     {
-        $this->namespace = $namespace;
+        $this->setNamespace($namespace);
     }
 
+    /**
+     * @param string $callback
+     * @param string $response
+     */
     public function get(string $callback, string $response): void
     {
-        if($callback === $this->request){
-            $this->notFound = false;
-            if ($this->method === "GET") {
-                $classMethod = explode("@", $response);
-                [$class, $method] = $classMethod;
-                $class = $this->namespace ."\\" . $class;
-                if (class_exists($class)) {
-                    $Class = new $class;
-                    if(method_exists($Class, $method)){
-                        $Class->$method();
-                    }else{
-                        $this->error = "o metodo " . $method . " não existe";
-                    }
-                }else{
-                    $this->error = "a classe " . $class . " não existe";
-                }
-            }
+        if ($this->setRequest($callback)) {
+            $this->setRoute($callback);
+            $this->setPatterns();
+            $this->controller($response, "GET");
         }
     }
 
+    /**
+     * @param string $callback
+     * @param string $response
+     */
     public function post(string $callback, string $response): void
     {
-        if ($this->method === "POST") {
-            echo "POST";
+        if ($this->setRequest($callback)) {
+            $this->setRoute($callback);
+            $this->setPatterns();
+            $this->controller($response, "POST");
         }
     }
 
+    /**
+     * @param string $callback
+     * @param string $response
+     */
     public function put(string $callback, string $response): void
     {
-        if ($this->method === "PUT") {
-            echo "PUT";
+        if ($this->setRequest($callback)) {
+            $this->setRoute($callback);
+            $this->setPatterns();
+            $this->controller($response, "PUT");
         }
     }
 
+    /**
+     * @param string $callback
+     * @param string $response
+     */
     public function delete(string $callback, string $response): void
     {
-        if ($this->method === "DELETE") {
-            echo "DELETE";
+        if ($this->setRequest($callback)) {
+            $this->setRoute($callback);
+            $this->setPatterns();
+            $this->controller($response, "DELETE");
         }
     }
 
-    public function error(): bool|string
+
+    /**
+     * @return bool|int
+     */
+    public function error(): bool|int
     {
-        if(!empty($this->error)) {
-            return $this->error;
-        }
-        return false;
+        return $this->getError();
     }
 
+    /**
+     *  setError
+     */
     public function exec(): void
     {
-        if($this->notFound){
-            $this->error = 'PAGINA NÃO EXISTE OU FOI REMOVIDA!';
+        if ($this->isNotFound()) {
+            $this->setError(404);
         }
     }
 
