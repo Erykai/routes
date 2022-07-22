@@ -29,12 +29,12 @@ class Route extends Resource
      * @param string $callback
      * @param string $response
      */
-    public function get(string $callback, string $response): void
+    public function get(string $callback, string $response, bool $middleware = false): void
     {
         if ($this->setRequest($callback)) {
             $this->setRoute($callback);
             $this->setPatterns();
-            $this->controller($response, "GET");
+            $this->controller($response, "GET", $middleware);
         }
     }
 
@@ -42,12 +42,12 @@ class Route extends Resource
      * @param string $callback
      * @param string $response
      */
-    public function post(string $callback, string $response): void
+    public function post(string $callback, string $response, bool $middleware = false): void
     {
         if ($this->setRequest($callback)) {
             $this->setRoute($callback);
             $this->setPatterns();
-            $this->controller($response, "POST");
+            $this->controller($response, "POST", $middleware);
         }
     }
 
@@ -55,12 +55,12 @@ class Route extends Resource
      * @param string $callback
      * @param string $response
      */
-    public function put(string $callback, string $response): void
+    public function put(string $callback, string $response, bool $middleware = false): void
     {
         if ($this->setRequest($callback)) {
             $this->setRoute($callback);
             $this->setPatterns();
-            $this->controller($response, "PUT");
+            $this->controller($response, "PUT", $middleware);
         }
     }
 
@@ -68,12 +68,12 @@ class Route extends Resource
      * @param string $callback
      * @param string $response
      */
-    public function delete(string $callback, string $response): void
+    public function delete(string $callback, string $response, bool $middleware = false): void
     {
         if ($this->setRequest($callback)) {
             $this->setRoute($callback);
             $this->setPatterns();
-            $this->controller($response, "DELETE");
+            $this->controller($response, "DELETE", $middleware);
         }
     }
 

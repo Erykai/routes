@@ -10,8 +10,10 @@ trait TraitRoute
     /**
      * @param string $response
      * @param string $verb
+     * @param bool $middleware
+     * @return bool
      */
-    public function controller(string $response, string $verb): void
+    public function controller(string $response, string $verb, bool $middleware): bool
     {
         foreach ($this->getPatterns() as $key => $pattern) {
             preg_match('#' . $pattern . '#', $this->getRequest(), $router);
@@ -36,16 +38,28 @@ trait TraitRoute
                                     $data = end($data);
                                 }
                                 $data['query'] = $this->getQuery();
+                                if($middleware){
+                                    $Middleware = new Middleware();
+                                    if(!$Middleware->validate())
+                                    {
+                                        $this->setError(401);
+                                        return false;
+                                    }
+                                }
                                 $Class->$method($data);
-                            } else {
-                                $this->setError(405);
+                                return true;
                             }
-                        } else {
-                            $this->setError(501);
+
+                            $this->setError(405);
+                            return false;
                         }
+
+                        $this->setError(501);
+                        return false;
                     }
                     break;
                 }
         }
+        return true;
     }
 }
