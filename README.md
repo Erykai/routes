@@ -6,7 +6,7 @@ Package responsible for routing the app, including middleware, complete for crea
 Composer:
 
 ```bash
-"erykai/routes": "1.0.*"
+"erykai/routes": "1.1.*"
 ```
 
 Terminal
@@ -52,11 +52,11 @@ $route->post('/login', 'Controller@login');
 $route->post('/create/post', 'Controller@post');
 $route->put('/edit/post', 'Controller@postPut');
 $route->delete('/delete/post', 'Controller@postDelete');
+//create all get, post, put and delete
+$route->default('/user', 'Controller');
 $route->exec();
 
-if ($route->error()) {
-    var_dump($route->error());
-}
+var_dump($route->response());
 ```
 
 Router and Middleware key JWT index.php
@@ -73,17 +73,44 @@ $route->namespace('Erykai\Routes');
 
 $route->get('/', 'Controller@home');
 $route->get('/post', 'Controller@post');
-$route->get('/post/{id}', 'Controller@post');
-$route->get('/post/{id}/{slug}', 'Controller@post');
+$route->get('/post/{id}', 'Controller@post', true);
+$route->get('/post/{id}/{slug}', 'Controller@post', true);
 $route->post('/login', 'Controller@login');
 $route->post('/create/post', 'Controller@post', true);
 $route->put('/edit/post', 'Controller@postPut', true);
 $route->delete('/delete/post', 'Controller@postDelete', true);
+//create all get, post, put and delete
+$route->default('/user', 'Controller', [true,false,false,false]);
 $route->exec();
 
-if ($route->error()) {
-    var_dump($route->error());
-}
+var_dump($route->response());
+```
+
+Router and Middleware key JWT and type Response index.php
+
+```php
+use Erykai\Routes\Route;
+
+require "vendor/autoload.php";
+
+const KEY_JWT = '1AAAJ@90jjkhgO```˜˜˜IHJN';
+
+$route = new Route();
+$route->namespace('Erykai\Routes');
+
+$route->get('/', 'Controller@home', response: "json");
+$route->get('/post', 'Controller@post');
+$route->get('/post/{id}', 'Controller@post', true, "object");
+$route->get('/post/{id}/{slug}', 'Controller@post', true, "array");
+$route->post('/login', 'Controller@login', response: "json");
+$route->post('/create/post', 'Controller@post', true, "json");
+$route->put('/edit/post', 'Controller@postPut', true, "json");
+$route->delete('/delete/post', 'Controller@postDelete', true, "json");
+//create all get, post, put and delete
+$route->default('/user', 'Controller', [true,false,false,false], "json");
+$route->exec();
+
+var_dump($route->response());
 ```
 
 Create Controller Class Controller.php
@@ -101,16 +128,17 @@ class Controller
     /**
      * @return bool
      */
-    public function home(): bool
+    public function home(?array $data, string $response): bool
     {
         echo "home";
+        var_dump($response);
         return true;
     }
 
     /**
      * @return bool
      */
-    public function login(): bool
+    public function login(?array $data, string $response): bool
     {
         $json = file_get_contents('php://input');
         $login = json_decode($json);
@@ -146,7 +174,7 @@ class Controller
      * @param array|null $data
      * @return bool
      */
-    public function post(?array $data): bool
+    public function post(?array $data, string $response): bool
     {
         var_dump($data, $_POST, file_get_contents('php://input'));
         return true;
@@ -156,7 +184,7 @@ class Controller
      * @param array $data
      * @return bool
      */
-    public function postPut(array $data): bool
+    public function postPut(?array $data, string $response): bool
     {
         var_dump($data, file_get_contents('php://input'));
         return true;
@@ -167,7 +195,7 @@ class Controller
      * @param array $data
      * @return bool
      */
-    public function postDelete(array $data): bool
+    public function postDelete(?array $data, string $response): bool
     {
         var_dump($data, file_get_contents('php://input'));
         return true;

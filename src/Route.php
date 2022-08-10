@@ -62,6 +62,15 @@ class Route extends Resource
         $this->callback($callback,$request,"DELETE",$middleware,$response);
     }
 
+    public function default(string $callback, string $request, array $middleware = [false,false,false,false], $response = "object"): void
+    {
+        $this->get($callback,"$request@read",$middleware[0], $response);
+        $this->get("$callback/{id}","$request@read",$middleware[0],$response);
+        $this->post($callback,"$request@store",$middleware[1],$response);
+        $this->put("$callback/{id}","$request@edit",$middleware[2],$response);
+        $this->delete("$callback/{id}","$request@destroy",$middleware[3],$response);
+    }
+
 
     /**
      * @return object
