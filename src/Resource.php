@@ -8,10 +8,6 @@ namespace Erykai\Routes;
 class Resource
 {
     /**
-     * @var bool|string
-     */
-    protected bool|string $error = false;
-    /**
      * @var array
      */
     protected array $route;
@@ -39,6 +35,29 @@ class Resource
      * @var bool
      */
     protected bool $notFound = true;
+
+    /**
+     * @var object
+     */
+    private object $response;
+
+    /**
+     * construct
+     */
+    public function __construct()
+    {
+        $this->setMethod();
+        $this->setResponse(200, "success", "return correct route");
+    }
+
+    protected function callback($callback, $request, $verb, $middleware, $response): void
+    {
+        if ($this->setRequest($callback)) {
+            $this->setRoute($callback);
+            $this->setPatterns();
+            $this->controller($request, $verb, $middleware, $response);
+        }
+    }
 
     /**
      * @return string
@@ -155,19 +174,29 @@ class Resource
 
 
     /**
-     * @return bool|int
+     * @return object
      */
-    protected function getError(): bool|int
+    protected function getResponse(): object
     {
-        return $this->error;
+        return $this->response;
     }
 
     /**
-     * @param int $error
+     * @param int $code
+     * @param string $type
+     * @param string $message
+     * @param object|null $data
+     * @param string|null $dynamic
      */
-    protected function setError(int $error): void
+    protected function setResponse(int $code, string $type, string $message, ?object $data = null, ?string $dynamic = null): void
     {
-        $this->error = $error;
+        $this->response = (object)[
+            "code" => $code,
+            "type" => $type,
+            "message" => $message,
+            "data" => $data,
+            "dynamic" => $dynamic
+        ];
     }
 
     /**

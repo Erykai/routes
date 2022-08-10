@@ -9,13 +9,6 @@ class Route extends Resource
 {
     use TraitRoute;
 
-    /**
-     * construct
-     */
-    public function __construct()
-    {
-        $this->setMethod();
-    }
 
     /**
      * @param string $namespace
@@ -27,72 +20,68 @@ class Route extends Resource
 
     /**
      * @param string $callback
+     * @param string $request
+     * @param bool $middleware
      * @param string $response
      */
-    public function get(string $callback, string $response, bool $middleware = false): void
+    public function get(string $callback, string $request, bool $middleware = false, string $response = "object"): void
     {
-        if ($this->setRequest($callback)) {
-            $this->setRoute($callback);
-            $this->setPatterns();
-            $this->controller($response, "GET", $middleware);
-        }
+        $this->callback($callback,$request,"GET",$middleware, $response);
     }
 
     /**
      * @param string $callback
+     * @param string $request
+     * @param bool $middleware
      * @param string $response
      */
-    public function post(string $callback, string $response, bool $middleware = false): void
+    public function post(string $callback, string $request, bool $middleware = false, string $response = "object"): void
     {
-        if ($this->setRequest($callback)) {
-            $this->setRoute($callback);
-            $this->setPatterns();
-            $this->controller($response, "POST", $middleware);
-        }
+        $this->callback($callback,$request,"POST",$middleware,$response);
     }
 
     /**
      * @param string $callback
+     * @param string $request
+     * @param bool $middleware
      * @param string $response
      */
-    public function put(string $callback, string $response, bool $middleware = false): void
+    public function put(string $callback, string $request, bool $middleware = false, string $response = "object"): void
     {
-        if ($this->setRequest($callback)) {
-            $this->setRoute($callback);
-            $this->setPatterns();
-            $this->controller($response, "PUT", $middleware);
-        }
+        $this->callback($callback,$request,"PUT",$middleware,$response);
     }
 
     /**
      * @param string $callback
+     * @param string $request
+     * @param bool $middleware
      * @param string $response
      */
-    public function delete(string $callback, string $response, bool $middleware = false): void
+    public function delete(string $callback, string $request, bool $middleware = false, string $response = "object"): void
     {
-        if ($this->setRequest($callback)) {
-            $this->setRoute($callback);
-            $this->setPatterns();
-            $this->controller($response, "DELETE", $middleware);
-        }
+        $this->callback($callback,$request,"DELETE",$middleware,$response);
     }
 
 
     /**
-     * @return bool|int
+     * @return object
      */
-    public function error(): bool|int
+    public function response(): object
     {
-        return $this->getError();
+        return $this->getResponse();
     }
 
     /**
-     *  setError
+     *  response
      */
     public function exec(): void
     {
         if ($this->isNotFound()) {
-            $this->setError(404);
+            $this->setResponse(
+                404,
+                "error",
+                "this path does not exist or has been removed"
+            );
         }
     }
 
