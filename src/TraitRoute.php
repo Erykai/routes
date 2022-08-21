@@ -8,70 +8,107 @@ namespace Erykai\Routes;
 trait TraitRoute
 {
     /**
-     * @param string $request
-     * @param string $verb
-     * @param bool $middleware
-     * @param string $response
      * @return bool
      */
-    public function controller(string $request, string $verb, bool $middleware, string $response): bool
+    private function duplicates(array $array)
     {
-        foreach ($this->getPatterns() as $key => $pattern) {
-            preg_match('#' . $pattern . '#', $this->getRequest(), $router);
-            preg_match_all('~{([^}]*)}~', $this->route[$key], $keys);
-            array_shift($router);
-
-            if (!empty($router)) {
-                $data[] = array_combine($keys[1], $router);
-                $this->route[$key] = str_replace($keys[0], $router, $this->route[$key]);
+        if ($this->getRequest() !== "") {
+            foreach ($array as $key => $item) {
+                if ($this->verb[$key] !== $this->getMethod()) {
+                    unset(
+                        $this->controller[$key],
+                        $this->middleware[$key],
+                        $this->type[$key],
+                        $this->verb[$key],
+                        $this->route[$key],
+                        $this->patterns[$key]
+                    );
+                }
             }
-            if (array_reverse($this->route)[0] === $this->getRequest() || $this->getRequest() === '') {
-                $this->setNotFound(false);
-                if ($this->getMethod() === $verb) {
-                    $classMethod = explode("@", $request);
-                    [$class, $method] = $classMethod;
-                    $class = $this->getNamespace() . "\\" . $class;
-                    if (class_exists($class)) {
-                        $Class = new $class;
-                        if (method_exists($Class, $method)) {
+        }
+        return $this;
+    }
 
-                            if (!empty($data[1])) {
-                                $data = end($data);
-                            }
-                            $data['query'] = $this->getQuery();
-                            if($middleware){
-                                $Middleware = new Middleware();
-                                if(!$Middleware->validate())
-                                {
-                                    $this->setResponse(
-                                        401,
-                                        "error",
-                                        "this access is mandatory to inform the correct Baren Token"
-                                    );
-                                    return false;
-                                }
-                            }
-                            $Class->$method($data, $response);
-                            return true;
-                        }
+
+    /**
+     * @param $class
+     * @param $method
+     * @param $data
+     * @param $key
+     * @return bool|void
+     */
+    private
+    function classMethod($class, $method, $data, $key)
+    {
+        $argument = $data;
+        unset($data);
+        $data['argument'] = $argument;
+        $class = $this->namespaceArray[$key] . "\\" . $class;
+        if (class_exists($class)) {
+            $Class = new $class;
+            if (method_exists($Class, $method)) {
+                $data['query'] = $this->getQuery();
+                if ($this->middleware[$key]) {
+                    $Middleware = new Middleware();
+                    if (!$Middleware->validate()) {
                         $this->setResponse(
-                            405,
+                            401,
                             "error",
-                            "the $request method does not exist",
-                            dynamic: $request
+                            "this access is mandatory to inform the correct Baren Token"
                         );
                         return false;
                     }
-                    $this->setResponse(
-                        501,
-                        "error",
-                        "the $class class does not exist",
-                        dynamic: $class
-                    );
-                    return false;
                 }
-                break;
+                $Class->$method($data, $this->type[$key]);
+                $this->setNotFound(false);
+                return true;
             }
+            $this->setResponse(
+                405,
+                "error",
+                "the {$this->controller[$key]} method does not exist",
+                dynamic: $this->controller[$key]
+            );
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public
+    function controller(): bool
+    {
+        $this->duplicates($this->getPatterns());
+        $patterns = array_unique($this->getPatterns());
+        if ($this->getRequest() == "") {
+            $patterns = (array)$patterns[0];
+        }
+
+        foreach ($patterns as $key => $pattern) {
+            if ($this->getMethod() === $this->verb[$key]) {
+                preg_match('#' . $pattern . '#', $this->getRequest(), $router);
+                if (isset($router[0])) {
+                    if ($router[0] === $this->getRequest()) {
+                        $classMethod = explode("@", $this->controller[$key]);
+                        [$class, $method] = $classMethod;
+                        array_shift($router);
+                        preg_match_all('~{([^}]*)}~', $this->route[$key], $keys);
+                        $data = array_combine($keys[1], $router);
+                        $this->classMethod($class, $method, $data, $key);
+                    }
+                } else {
+                    if ($this->getRequest() == "") {
+                        $classMethod = explode("@", $this->controller[$key]);
+                        [$class, $method] = $classMethod;
+                        array_shift($router);
+                        preg_match_all('~{([^}]*)}~', $this->route[$key], $keys);
+                        $data = array_combine($keys[1], $router);
+                        $this->classMethod($class, $method, $data, $key);
+                    }
+                }
+            }
+
         }
         return true;
     }

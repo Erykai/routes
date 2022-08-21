@@ -7,8 +7,6 @@ namespace Erykai\Routes;
  */
 class Route extends Resource
 {
-    use TraitRoute;
-
 
     /**
      * @param string $namespace
@@ -20,55 +18,61 @@ class Route extends Resource
 
     /**
      * @param string $callback
-     * @param string $request
+     * @param string $controller
      * @param bool $middleware
-     * @param string $response
+     * @param string $type
      */
-    public function get(string $callback, string $request, bool $middleware = false, string $response = "object"): void
+    public function get(string $callback, string $controller, bool $middleware = false, string $type = "object"): void
     {
-        $this->callback($callback,$request,"GET",$middleware, $response);
+        $this->callback($callback,$controller,"GET",$middleware, $type);
     }
 
     /**
      * @param string $callback
-     * @param string $request
+     * @param string $controller
      * @param bool $middleware
-     * @param string $response
+     * @param string $type
      */
-    public function post(string $callback, string $request, bool $middleware = false, string $response = "object"): void
+    public function post(string $callback, string $controller, bool $middleware = false, string $type = "object"): void
     {
-        $this->callback($callback,$request,"POST",$middleware,$response);
+        $this->callback($callback,$controller,"POST",$middleware,$type);
     }
 
     /**
      * @param string $callback
-     * @param string $request
+     * @param string $controller
      * @param bool $middleware
-     * @param string $response
+     * @param string $type
      */
-    public function put(string $callback, string $request, bool $middleware = false, string $response = "object"): void
+    public function put(string $callback, string $controller, bool $middleware = false, string $type = "object"): void
     {
-        $this->callback($callback,$request,"PUT",$middleware,$response);
+        $this->callback($callback,$controller,"PUT",$middleware,$type);
     }
 
     /**
      * @param string $callback
-     * @param string $request
+     * @param string $controller
      * @param bool $middleware
-     * @param string $response
+     * @param string $type
      */
-    public function delete(string $callback, string $request, bool $middleware = false, string $response = "object"): void
+    public function delete(string $callback, string $controller, bool $middleware = false, string $type = "object"): void
     {
-        $this->callback($callback,$request,"DELETE",$middleware,$response);
+        $this->callback($callback,$controller,"DELETE",$middleware,$type);
     }
 
-    public function default(string $callback, string $request, array $middleware = [false,false,false,false], $response = "object"): void
+    /**
+     * @param string $callback
+     * @param string $controller
+     * @param array|false[] $middleware
+     * @param string $type
+     */
+    public function default(string $callback, string $controller, array $middleware = [false,false,false,false], $type = "object"): void
     {
-        $this->get($callback,"$request@read",$middleware[0], $response);
-        $this->get("$callback/{id}","$request@read",$middleware[0],$response);
-        $this->post($callback,"$request@store",$middleware[1],$response);
-        $this->put("$callback/{id}","$request@edit",$middleware[2],$response);
-        $this->delete("$callback/{id}","$request@destroy",$middleware[3],$response);
+        $this->get($callback,"$controller@read",$middleware[0], $type);
+        $this->get("$callback/{id}","$controller@read",$middleware[0],$type);
+        $this->post($callback,"$controller@store",$middleware[1],$type);
+        $this->put("$callback/{id}","$controller@edit",$middleware[2],$type);
+        $this->delete("$callback/{id}","$controller@destroy",$middleware[3],$type);
     }
 
 
@@ -85,6 +89,7 @@ class Route extends Resource
      */
     public function exec(): void
     {
+        $this->controller();
         if ($this->isNotFound()) {
             $this->setResponse(
                 404,

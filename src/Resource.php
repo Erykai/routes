@@ -7,6 +7,7 @@ namespace Erykai\Routes;
  */
 class Resource
 {
+    use TraitRoute;
     /**
      * @var array
      */
@@ -30,6 +31,11 @@ class Resource
     /**
      * @var array
      */
+    protected array $namespaceArray;
+
+    /**
+     * @var array
+     */
     protected array $patterns;
     /**
      * @var bool
@@ -40,6 +46,31 @@ class Resource
      * @var object
      */
     private object $response;
+    /**
+     * @var array
+     */
+    protected array $callback;
+
+    /**
+     * @var array
+     */
+    protected array $controller;
+
+    /**
+     * @var array
+     */
+    protected array $middleware;
+
+    /**
+     * @var array
+     */
+    protected array $type;
+
+    /**
+     * @var array
+     */
+    protected array $verb;
+
 
     /**
      * construct
@@ -50,12 +81,17 @@ class Resource
         $this->setResponse(200, "success", "return correct route");
     }
 
-    protected function callback($callback, $request, $verb, $middleware, $response): void
+    protected function callback($callback, $controller, $verb, $middleware, $type): void
     {
         if ($this->setRequest($callback)) {
             $this->setRoute($callback);
             $this->setPatterns();
-            $this->controller($request, $verb, $middleware, $response);
+            $this->controller[] = $controller;
+            $this->middleware[] = $middleware;
+            $this->type[] = $type;
+            $this->verb[] = $verb;
+            $this->namespaceArray[] = $this->namespace;
+
         }
     }
 
