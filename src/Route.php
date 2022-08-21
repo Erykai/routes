@@ -89,7 +89,9 @@ class Route extends Resource
      */
     public function exec(): void
     {
-        $this->controller();
+        if(!$this->controller()){
+            header("Refresh:0");
+        }
         if ($this->isNotFound()) {
             $this->setResponse(
                 404,

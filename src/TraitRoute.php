@@ -29,6 +29,39 @@ trait TraitRoute
         return $this;
     }
 
+    private function patterns()
+    {
+        $patterns = array_unique($this->getPatterns());
+        if ($this->getRequest() == "") {
+            $patterns = (array)$patterns[0];
+        }
+        foreach ($patterns as $key => $pattern) {
+            if ($this->getMethod() === $this->verb[$key]) {
+                @preg_match('#' . $pattern . '#', $this->getRequest(), $router);
+                if (isset($router[0])) {
+                    if ($router[0] === $this->getRequest()) {
+                        $classMethod = explode("@", $this->controller[$key]);
+                        [$class, $method] = $classMethod;
+                        array_shift($router);
+                        preg_match_all('~{([^}]*)}~', $this->route[$key], $keys);
+                        $data = array_combine($keys[1], $router);
+                        $this->classMethod($class, $method, $data, $key);
+                    }
+                } else {
+                    if ($this->getRequest() == "") {
+                        $classMethod = explode("@", $this->controller[$key]);
+                        [$class, $method] = $classMethod;
+                        array_shift($router);
+                        preg_match_all('~{([^}]*)}~', $this->route[$key], $keys);
+                        $data = array_combine($keys[1], $router);
+                        $this->classMethod($class, $method, $data, $key);
+                    }
+                }
+            }
+
+        }
+        return true;
+    }
 
     /**
      * @param $class
@@ -80,35 +113,9 @@ trait TraitRoute
     function controller(): bool
     {
         $this->duplicates($this->getPatterns());
-        $patterns = array_unique($this->getPatterns());
-        if ($this->getRequest() == "") {
-            $patterns = (array)$patterns[0];
-        }
-
-        foreach ($patterns as $key => $pattern) {
-            if ($this->getMethod() === $this->verb[$key]) {
-                preg_match('#' . $pattern . '#', $this->getRequest(), $router);
-                if (isset($router[0])) {
-                    if ($router[0] === $this->getRequest()) {
-                        $classMethod = explode("@", $this->controller[$key]);
-                        [$class, $method] = $classMethod;
-                        array_shift($router);
-                        preg_match_all('~{([^}]*)}~', $this->route[$key], $keys);
-                        $data = array_combine($keys[1], $router);
-                        $this->classMethod($class, $method, $data, $key);
-                    }
-                } else {
-                    if ($this->getRequest() == "") {
-                        $classMethod = explode("@", $this->controller[$key]);
-                        [$class, $method] = $classMethod;
-                        array_shift($router);
-                        preg_match_all('~{([^}]*)}~', $this->route[$key], $keys);
-                        $data = array_combine($keys[1], $router);
-                        $this->classMethod($class, $method, $data, $key);
-                    }
-                }
-            }
-
+        $this->patterns();
+        if (empty($this->getPatterns())) {
+            return false;
         }
         return true;
     }
