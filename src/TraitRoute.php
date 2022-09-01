@@ -80,6 +80,7 @@ trait TraitRoute
         if (class_exists($class)) {
             $Class = new $class;
             if (method_exists($Class, $method)) {
+                $this->setNotFound(false);
                 $data['query'] = $this->getQuery();
                 if ($this->middleware[$key]) {
                     $Middleware = new Middleware();
@@ -93,7 +94,6 @@ trait TraitRoute
                     }
                 }
                 $Class->$method($data, $this->type[$key]);
-                $this->setNotFound(false);
                 return true;
             }
             $this->setResponse(
