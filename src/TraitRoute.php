@@ -42,7 +42,9 @@ trait TraitRoute
         }
         foreach ($patterns as $key => $pattern) {
             if ($this->getMethod() === $this->verb[$key]) {
-                @preg_match('#' . $pattern . '#', $this->getRequest(), $router);
+                if (preg_match('#' . $pattern . '#', $this->getRequest(), $router)) {
+                    throw new RuntimeException('Error '.$pattern.' ' . $this->getRequest());
+                }
                 if (isset($router[0])) {
                     if ($router[0] === $this->getRequest()) {
                         $this->setClass($key, $router);
