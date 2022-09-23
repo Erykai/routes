@@ -44,22 +44,36 @@ trait TraitRoute
         if ($this->getRequest() === "") {
             $patterns = (array)$patterns[0];
         }
+        $this->keyRouter($patterns);
+        return true;
+    }
+    /**
+     * @param $pattern
+     * @return mixed
+     */
+    private function pregMatch($pattern): mixed
+    {
+        if (preg_match('#' . $pattern . '#', $this->getRequest(), $router)) {
+            throw new RuntimeException('Error ' . $pattern . ' ' . $this->getRequest());
+        }
+        return $router;
+    }
+    /**
+     * @param $patterns
+     */
+    private function keyRouter($patterns): void
+    {
         foreach ($patterns as $key => $pattern) {
             if ($this->getMethod() === $this->verb[$key]) {
-                if (preg_match('#' . $pattern . '#', $this->getRequest(), $router)) {
-                    throw new RuntimeException('Error '.$pattern.' ' . $this->getRequest());
-                }
-                if (isset($router[0])) {
-                    if ($router[0] === $this->getRequest()) {
-                        $this->setClass($key, $router);
-                    }
+                $router = $this->pregMatch($pattern);
+                if (isset($router[0]) && $router[0] === $this->getRequest()) {
+                    $this->setClass($key, $router);
                 } else if ($this->getRequest() === "") {
                     $this->setClass($key, $router);
                 }
             }
 
         }
-        return true;
     }
     /**
      * @param $key
@@ -202,5 +216,4 @@ trait TraitRoute
             "dynamic" => $dynamic
         ];
     }
-
 }
