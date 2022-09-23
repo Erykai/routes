@@ -59,7 +59,7 @@ class Controller
      */
     public function post(?array $data): bool
     {
-        var_dump($data, $_POST, file_get_contents('php://input'));
+       // var_dump($data, $_POST, file_get_contents('php://input'));
         return true;
     }
 
@@ -69,7 +69,7 @@ class Controller
      */
     public function postPut(array $data): bool
     {
-        var_dump($data, file_get_contents('php://input'));
+       // var_dump($data, file_get_contents('php://input'));
         return true;
 
     }
@@ -80,7 +80,7 @@ class Controller
      */
     public function postDelete(array $data): bool
     {
-        var_dump($data, file_get_contents('php://input'));
+       // var_dump($data, file_get_contents('php://input'));
         return true;
 
     }

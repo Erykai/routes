@@ -10,9 +10,9 @@ $route = new Route();
 $route->namespace('Erykai\Routes');
 
 $route->get('/', 'Controller@home');
-$route->get('/post', 'Controller@post', response: "array");
-$route->get('/post/{id}', 'Controller@post', response: "object");
-$route->get('/post/{id}/{slug}', 'Controller@post', response: "json");
+$route->get('/post', 'Controller@post', type: "array");
+$route->get('/post/{id}', 'Controller@post');
+$route->get('/post/{id}/{slug}', 'Controller@post', type: "json");
 //create all get, post, put and delete
 $route->default('/usuario/cadastro', 'UserController', [false,false,true,true], "json");
 
@@ -25,5 +25,3 @@ $route->put('/edit/post', 'Controller@postPut', true);
 $route->delete('/delete/post', 'Controller@postDelete', true);
 
 $route->exec();
-
-var_dump($route->response());
