@@ -1,4 +1,12 @@
 # Erykai routes
+[![Maintainer](http://img.shields.io/badge/maintainer-@alexdeovidal-blue.svg?style=flat-square)](https://instagram.com/alexdeovidal)
+[![Source Code](http://img.shields.io/badge/source-erykai/routes-blue.svg?style=flat-square)](https://github.com/erykai/routes)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/erykai/routes.svg?style=flat-square)](https://packagist.org/packages/erykai/routes)
+[![Latest Version](https://img.shields.io/github/release/erykai/routes.svg?style=flat-square)](https://github.com/erykai/routes/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Quality Score](https://img.shields.io/scrutinizer/g/erykai/routes.svg?style=flat-square)](https://scrutinizer-ci.com/g/erykai/routes)
+[![Total Downloads](https://img.shields.io/packagist/dt/erykai/routes.svg?style=flat-square)](https://packagist.org/packages/erykai/routes)
+
 Package responsible for routing the app, including middleware, complete for creating routes for api rest.
 
 ## Installation

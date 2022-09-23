@@ -5,7 +5,7 @@ namespace Erykai\Routes;
 /**
  *
  */
-class Resource
+abstract class Resource
 {
     use TraitRoute;
     /**
@@ -238,7 +238,7 @@ class Resource
     /**
      * @return bool
      */
-    public function isNotFound(): bool
+    protected function isNotFound(): bool
     {
         return $this->notFound;
     }
@@ -246,7 +246,7 @@ class Resource
     /**
      * @param bool $notFound
      */
-    public function setNotFound(bool $notFound): void
+    protected function setNotFound(bool $notFound): void
     {
         $this->notFound = $notFound;
     }
