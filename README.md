@@ -14,7 +14,7 @@ Package responsible for routing the app, including middleware, complete for crea
 Composer:
 
 ```bash
-"erykai/routes": "1.1.*"
+"erykai/routes": "1.3.*"
 ```
 
 Terminal
@@ -106,11 +106,11 @@ const KEY_JWT = '1AAAJ@90jjkhgO```˜˜˜IHJN';
 $route = new Route();
 $route->namespace('Erykai\Routes');
 
-$route->get('/', 'Controller@home', response: "json");
+$route->get('/', 'Controller@home', type: "json");
 $route->get('/post', 'Controller@post');
 $route->get('/post/{id}', 'Controller@post', true, "object");
 $route->get('/post/{id}/{slug}', 'Controller@post', true, "array");
-$route->post('/login', 'Controller@login', response: "json");
+$route->post('/login', 'Controller@login', type: "json");
 $route->post('/create/post', 'Controller@post', true, "json");
 $route->put('/edit/post', 'Controller@postPut', true, "json");
 $route->delete('/delete/post', 'Controller@postDelete', true, "json");
