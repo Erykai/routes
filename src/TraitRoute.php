@@ -10,6 +10,10 @@ use RuntimeException;
 trait TraitRoute
 {
     /**
+     * @var object
+     */
+    private object $response;
+    /**
      * @param array $array
      * @return object
      */
@@ -181,4 +185,22 @@ trait TraitRoute
     {
         return $this->notFound;
     }
+    /**
+     * @param int $code
+     * @param string $type
+     * @param string $message
+     * @param object|null $data
+     * @param string|null $dynamic
+     */
+    protected function setResponse(int $code, string $type, string $message, ?object $data = null, ?string $dynamic = null): void
+    {
+        $this->response = (object)[
+            "code" => $code,
+            "type" => $type,
+            "message" => $message,
+            "data" => $data,
+            "dynamic" => $dynamic
+        ];
+    }
+
 }

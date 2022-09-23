@@ -41,10 +41,6 @@ abstract class Resource
      */
     protected bool $notFound = true;
     /**
-     * @var object
-     */
-    private object $response;
-    /**
      * @var array
      */
     protected array $callback;
@@ -134,23 +130,6 @@ abstract class Resource
     protected function setQuery(?array $query): void
     {
         $this->query = $query;
-    }
-    /**
-     * @param int $code
-     * @param string $type
-     * @param string $message
-     * @param object|null $data
-     * @param string|null $dynamic
-     */
-    protected function setResponse(int $code, string $type, string $message, ?object $data = null, ?string $dynamic = null): void
-    {
-        $this->response = (object)[
-            "code" => $code,
-            "type" => $type,
-            "message" => $message,
-            "data" => $data,
-            "dynamic" => $dynamic
-        ];
     }
     /**
      * @param bool $notFound
