@@ -53,7 +53,7 @@ trait TraitRoute
      */
     private function pregMatch($pattern): mixed
     {
-        if (preg_match('#' . $pattern . '#', $this->getRequest(), $router)) {
+        if (preg_match('#' . $pattern . '#', $this->getRequest(), $router) === false) {
             throw new RuntimeException('Error ' . $pattern . ' ' . $this->getRequest());
         }
         return $router;
