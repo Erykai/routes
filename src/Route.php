@@ -15,7 +15,6 @@ class Route extends Resource
     {
         $this->setNamespace($namespace);
     }
-
     /**
      * @param string $callback
      * @param string $controller
@@ -26,7 +25,6 @@ class Route extends Resource
     {
         $this->callback($callback,$controller,"GET",$middleware, $type);
     }
-
     /**
      * @param string $callback
      * @param string $controller
@@ -37,7 +35,6 @@ class Route extends Resource
     {
         $this->callback($callback,$controller,"POST",$middleware,$type);
     }
-
     /**
      * @param string $callback
      * @param string $controller
@@ -48,7 +45,6 @@ class Route extends Resource
     {
         $this->callback($callback,$controller,"PUT",$middleware,$type);
     }
-
     /**
      * @param string $callback
      * @param string $controller
@@ -59,7 +55,6 @@ class Route extends Resource
     {
         $this->callback($callback,$controller,"DELETE",$middleware,$type);
     }
-
     /**
      * @param string $callback
      * @param string $controller
@@ -74,8 +69,6 @@ class Route extends Resource
         $this->put("$callback/{id}","$controller@edit",$middleware[2],$type);
         $this->delete("$callback/{id}","$controller@destroy",$middleware[3],$type);
     }
-
-
     /**
      * @return object
      */
@@ -83,7 +76,6 @@ class Route extends Resource
     {
         return $this->getResponse();
     }
-
     /**
      *  response
      */

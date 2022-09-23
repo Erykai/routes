@@ -2,15 +2,18 @@
 
 namespace Erykai\Routes;
 
+use RuntimeException;
+
 /**
  * Trait Controller Router
  */
 trait TraitRoute
 {
     /**
-     * @return bool
+     * @param array $array
+     * @return object
      */
-    private function duplicates(array $array)
+    private function duplicates(array $array): object
     {
         if ($this->getRequest() !== "") {
             foreach ($array as $key => $item) {
@@ -28,11 +31,13 @@ trait TraitRoute
         }
         return $this;
     }
-
-    private function patterns()
+    /**
+     * @return bool
+     */
+    private function patterns(): bool
     {
         $patterns = array_unique($this->getPatterns());
-        if ($this->getRequest() == "") {
+        if ($this->getRequest() === "") {
             $patterns = (array)$patterns[0];
         }
         foreach ($patterns as $key => $pattern) {
@@ -40,29 +45,31 @@ trait TraitRoute
                 @preg_match('#' . $pattern . '#', $this->getRequest(), $router);
                 if (isset($router[0])) {
                     if ($router[0] === $this->getRequest()) {
-                        $classMethod = explode("@", $this->controller[$key]);
-                        [$class, $method] = $classMethod;
-                        array_shift($router);
-                        preg_match_all('~{([^}]*)}~', $this->route[$key], $keys);
-                        $data = array_combine($keys[1], $router);
-                        $this->classMethod($class, $method, $data, $key);
+                        $this->setClass($key, $router);
                     }
-                } else {
-                    if ($this->getRequest() == "") {
-                        $classMethod = explode("@", $this->controller[$key]);
-                        [$class, $method] = $classMethod;
-                        array_shift($router);
-                        preg_match_all('~{([^}]*)}~', $this->route[$key], $keys);
-                        $data = array_combine($keys[1], $router);
-                        $this->classMethod($class, $method, $data, $key);
-                    }
+                } else if ($this->getRequest() === "") {
+                    $this->setClass($key, $router);
                 }
             }
 
         }
         return true;
     }
-
+    /**
+     * @param $key
+     * @param $router
+     */
+    private function setClass($key, $router): void
+    {
+        $classMethod = explode("@", $this->controller[$key]);
+        [$class, $method] = $classMethod;
+        array_shift($router);
+        if (preg_match_all('~{([^}]*)}~', $this->route[$key], $keys) === false) {
+            throw new RuntimeException('The route ' . $this->route[$key] . ' not exist.');
+        }
+        $data = array_combine($keys[1], $router);
+        $this->classMethod($class, $method, $data, $key);
+    }
     /**
      * @param $class
      * @param $method
@@ -70,8 +77,7 @@ trait TraitRoute
      * @param $key
      * @return bool|void
      */
-    private
-    function classMethod($class, $method, $data, $key)
+    private function classMethod($class, $method, $data, $key)
     {
         $argument = $data;
         unset($data);
@@ -105,12 +111,10 @@ trait TraitRoute
             return false;
         }
     }
-
     /**
      * @return bool
      */
-    public
-    function controller(): bool
+    protected function controller(): bool
     {
         $this->duplicates($this->getPatterns());
         $this->patterns();
@@ -118,5 +122,68 @@ trait TraitRoute
             return false;
         }
         return true;
+    }
+    /**
+     * @return array
+     */
+    protected function getPatterns(): array
+    {
+        return $this->patterns;
+    }
+    /**
+     * @return object
+     */
+    protected function getResponse(): object
+    {
+        return $this->response;
+    }
+    /**
+     * @return string
+     */
+    protected function getMethod(): string
+    {
+        return $this->method;
+    }
+    /**
+     * @return string
+     */
+    protected function getRequest(): string
+    {
+        return $this->request;
+    }
+    /**
+     * @return array|null
+     */
+    protected function getQuery(): ?array
+    {
+        return $this->query;
+    }
+    /**
+     * @return string
+     */
+    protected function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+    /**
+     * @return array
+     */
+    protected function getRoute(): array
+    {
+        return $this->route;
+    }
+    /**
+     * @param bool $notFound
+     */
+    protected function setNotFound(bool $notFound): void
+    {
+        $this->notFound = $notFound;
+    }
+    /**
+     * @return bool
+     */
+    protected function isNotFound(): bool
+    {
+        return $this->notFound;
     }
 }
