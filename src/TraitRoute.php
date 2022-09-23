@@ -173,13 +173,6 @@ trait TraitRoute
         return $this->route;
     }
     /**
-     * @param bool $notFound
-     */
-    protected function setNotFound(bool $notFound): void
-    {
-        $this->notFound = $notFound;
-    }
-    /**
      * @return bool
      */
     protected function isNotFound(): bool

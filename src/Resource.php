@@ -160,4 +160,11 @@ abstract class Resource
             "dynamic" => $dynamic
         ];
     }
+    /**
+     * @param bool $notFound
+     */
+    protected function setNotFound(bool $notFound): void
+    {
+        $this->notFound = $notFound;
+    }
 }
