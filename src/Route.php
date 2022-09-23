@@ -7,7 +7,14 @@ namespace Erykai\Routes;
  */
 class Route extends Resource
 {
-
+    /**
+     * construct
+     */
+    public function __construct()
+    {
+        $this->setMethod();
+        $this->setResponse(200, "success", "return correct route");
+    }
     /**
      * @param string $namespace
      */
@@ -92,5 +99,4 @@ class Route extends Resource
             );
         }
     }
-
 }

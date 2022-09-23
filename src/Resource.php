@@ -64,14 +64,6 @@ abstract class Resource
      * @var array
      */
     protected array $verb;
-    /**
-     * construct
-     */
-    public function __construct()
-    {
-        $this->setMethod();
-        $this->setResponse(200, "success", "return correct route");
-    }
     protected function callback($callback, $controller, $verb, $middleware, $type): void
     {
         if ($this->setRequest($callback)) {
@@ -167,4 +159,5 @@ abstract class Resource
     {
         $this->notFound = $notFound;
     }
+
 }
