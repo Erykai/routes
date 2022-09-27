@@ -114,7 +114,8 @@ trait TraitRoute
                         $this->setResponse(
                             401,
                             "error",
-                            "this access is mandatory to inform the correct Baren Token"
+                            "this access is mandatory to inform the correct Baren Token",
+                            "mandatory"
                         );
                         return false;
                     }
@@ -126,6 +127,7 @@ trait TraitRoute
                 405,
                 "error",
                 "the {$this->controller[$key]} method does not exist",
+                "controller",
                 dynamic: $this->controller[$key]
             );
             return false;
@@ -202,16 +204,18 @@ trait TraitRoute
     /**
      * @param int $code
      * @param string $type
-     * @param string $message
+     * @param string $text
+     * @param string $model
      * @param object|null $data
      * @param string|null $dynamic
      */
-    protected function setResponse(int $code, string $type, string $message, ?object $data = null, ?string $dynamic = null): void
+    protected function setResponse(int $code, string $type, string $text, string $model, ?object $data = null, ?string $dynamic = null): void
     {
         $this->response = (object)[
             "code" => $code,
             "type" => $type,
-            "message" => $message,
+            "text" => $text,
+            "model" => $model,
             "data" => $data,
             "dynamic" => $dynamic
         ];

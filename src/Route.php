@@ -13,7 +13,7 @@ class Route extends Resource
     public function __construct()
     {
         $this->setMethod();
-        $this->setResponse(200, "success", "return correct route");
+        $this->setResponse(200, "success", "return correct route", "route");
     }
     /**
      * @param string $namespace
@@ -68,7 +68,7 @@ class Route extends Resource
      * @param array|false[] $middleware
      * @param string $type
      */
-    public function default(string $callback, string $controller, array $middleware = [false,false,false,false], $type = "object"): void
+    public function default(string $callback, string $controller, array $middleware = [false,false,false,false], string $type = "object"): void
     {
         $this->get($callback,"$controller@read",$middleware[0], $type);
         $this->get("$callback/{id}","$controller@read",$middleware[0],$type);
@@ -95,7 +95,8 @@ class Route extends Resource
             $this->setResponse(
                 404,
                 "error",
-                "this path does not exist or has been removed"
+                "this path does not exist or has been removed",
+                "route"
             );
         }
     }
