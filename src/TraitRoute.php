@@ -132,6 +132,14 @@ trait TraitRoute
             );
             return false;
         }
+        $this->setResponse(
+            405,
+            "error",
+            "the {$class} class does not exist",
+            "controller",
+            dynamic: $this->controller[$key]
+        );
+        return false;
     }
     /**
      * @return bool
