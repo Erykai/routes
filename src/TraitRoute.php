@@ -104,7 +104,7 @@ trait TraitRoute
         $data['argument'] = $argument;
         $class = $this->namespaceArray[$key] . "\\" . $class;
         if (class_exists($class)) {
-            $Class = new $class;
+            $Class = $class::getInstance();
             if (method_exists($Class, $method)) {
                 $this->setNotFound(false);
                 $data['query'] = $this->getQuery();
